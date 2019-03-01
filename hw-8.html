@@ -1,0 +1,1385 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+      <script defer src="https://use.fontawesome.com/releases/v5.0.9/js/all.js" integrity="sha384-8iPTk2s/jMVj81dnzb/iFR2sdA7u06vHJyyLlAd4snFpCl/SnyUjRrbdJsw1pGIl" crossorigin="anonymous"></script>     
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCPQfFU0m292Roic3LKUjkNi9GzFJd656c&libraries=places"></script>
+      <script type="text/javascript" async src="https://platform.twitter.com/widgets.js"></script>
+      <!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/rateYo/2.3.2/jquery.rateyo.min.css">
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/rateYo/2.3.2/jquery.rateyo.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.min.js"></script>
+      <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script> 
+  <style>
+      .container-fluid{
+          padding-left: 4%;
+          padding-right: 4%;
+      }
+      .btn .btn-default{
+          background-color: white;
+      }
+      td,th{
+          white-space: nowrap;
+      }
+      /*table{
+          overflow-x: scroll;
+      }*/
+
+      input.ng-invalid.ng-touched{
+          border: 2px solid red;
+      }
+      #favtwitter{
+          margin:5px;
+      }
+      #tweetbutton{
+          margin:5px;
+          padding: 0px;
+          width: 44px;
+          height:38px;
+      }
+      .reviewclass{
+          background-color: white;
+          color: black;
+      }
+      .reviewclass:focus{
+          background-color: lightgray;
+      }
+      .btn-default{
+          border: 1px solid lightgrey;
+          background-color: white;
+      }
+      .card{
+          margin:5px;
+      }
+      #main{
+            border: thick solid lightgrey;
+            background-color: #faf9fa;
+      }
+      
+      #new{
+          width: 100%;
+          height: 500px;
+      }
+      #streetview{
+          width:30px;
+          height: 30px;
+      }
+      #tweet img{
+          width: 44px;
+          height:38px;
+          padding: 0px;
+          margin: 0px;
+      }
+      .table-outer-bordered tr{
+          border: solid black 1px;
+          border-spacing: 4px;
+          margin: 5px;
+      }
+      #google_review_content{
+          display: block;
+      }
+      #yelp_review_content{
+          display: none;
+      }
+      .jq-ry-container{
+          display: inline;
+          position: absolute;
+      }
+      #placename{
+          text-align: center;
+          font-weight: bolder;
+          font-size: 20px;
+          padding-top: 20px;
+      }
+      #Info{
+          padding-top: 20px;
+      }
+      #getDirection{
+              margin-top: 7px;
+      }
+      .row{
+             display: -ms-flexbox; /* IE10 */
+             display: flex;
+             -ms-flex-wrap: wrap; /* IE10 */
+             flex-wrap: wrap;
+             padding: 0 4px;
+            }
+
+/* Create four equal columns that sits next to each other */
+    .column{
+                -ms-flex: 25%; /* IE10 */
+    flex: 25%;
+    max-width: 25%;
+    padding: 0 4px;
+            }  
+
+      .column img{
+                  margin-top: 8px;
+                  vertical-align: middle;
+                    }
+
+/* Responsive layout - makes a two column-layout instead of four columns */
+@media screen and (max-width: 800px){
+  .column {
+    -ms-flex: 50%;
+      flex: 50%;
+    max-width: 50%;
+  }
+}
+
+/* Responsive layout - makes the two columns stack on top of each other instead of next to each other */
+@media screen and (max-width: 600px){
+  .column{
+      -ms-flex: 100%;
+    flex: 100%;
+    max-width: 100%;
+  }
+}
+      .column3{
+                -ms-flex: 30%; /* IE10 */
+    flex: 30%;
+    max-width: 30%;
+    padding: 0 4px;
+            }
+      .column7{
+                -ms-flex: 70%; /* IE10 */
+    flex: 70%;
+    max-width: 70%;
+    padding: 0 4px;
+            }
+      </style>
+    <script>
+        var myStorage = window.localStorage;
+        console.log(myStorage);
+        var fromtext = "";
+        var fromvalue = "";
+        var globalvar="";
+        var globalarr = [];
+        var globali = 1;
+        var highlighti = null;
+        var favhighlighti = null;
+        var tem = null;
+        
+        function clearfunc()
+        {
+            console.log("calling clear");
+            /*document.getElementById("completedetails").style.display = "none";
+            document.getElementById("resultFav2").innerHTML = "";*/
+            resetter1();
+            document.getElementById("pagin").innerHTML = "";
+            document.getElementById("resultFav1").innerHTML = "";
+            globalarr = [];
+            globali = 1;
+            highlighti = null;
+            favhighlighti = null;
+            
+        }
+        function infavhighlight()
+        {
+            if(highlighti != null)
+                {
+                    if(document.getElementById("fav"+favhighlighti) == null)
+                        {
+                            if(document.getElementById("fav"+highlighti) != null)
+                                document.getElementById("fav"+highlighti).style.backgroundColor = "orange";
+                        }
+                    else
+                        {
+                            if(document.getElementById("fav"+highlighti) != null)
+                                {
+                                    document.getElementById("fav"+favhighlighti).style.backgroundColor = "white";
+                                    document.getElementById("fav"+highlighti).style.backgroundColor = "orange";
+                                    favhighlighti = highlighti;
+                                }
+                        }
+                }
+        }
+        function highlighterresults(placeid)
+        {
+            if(highlighti == null)
+                {
+                    console.log("first time");
+                    highlighti = placeid;
+                    document.getElementById("row"+placeid).style.backgroundColor = "orange";
+                }
+            else
+                {
+                    console.log("next times");
+                    document.getElementById("row"+highlighti).style.backgroundColor = "white";
+                    document.getElementById("row"+placeid).style.backgroundColor = "orange";
+                    highlighti = placeid;
+                }
+        }
+        
+        function highlighterfav(placeid)
+        {
+            if(highlighti != null)
+                {
+            if(document.getElementById("row"+highlighti) != null)    
+                document.getElementById("row"+highlighti).style.backgroundColor = "white";
+                }
+            if(document.getElementById("row"+placeid) != null)
+                {
+                    document.getElementById("row"+placeid).style.backgroundColor = "orange";
+                    highlighti = placeid;
+                }
+                
+            if(favhighlighti == null)
+                {
+                    console.log("first time");
+                    favhighlighti = placeid;
+                    document.getElementById("fav"+placeid).style.backgroundColor = "orange";
+                }
+            else
+                {
+                    console.log("next times");
+                    document.getElementById("fav"+favhighlighti).style.backgroundColor = "white";
+                    document.getElementById("fav"+placeid).style.backgroundColor = "orange";
+                    favhighlighti = placeid;
+                }
+        }
+        
+        function resetter1(){
+            document.getElementById("completedetails").style.display = "none";
+            document.getElementById("fav").style.display = "none";
+            if(document.getElementById("resultFav2") != null)
+            document.getElementById("resultFav2").style.display = "none";
+            document.getElementById("results").style.display = "block";
+            document.getElementById("resultFav1").style.display = "block";
+        }
+        
+        function resetter2(){
+            document.getElementById("completedetails").style.display = "none";
+            document.getElementById("results").style.display = "none";
+            document.getElementById("resultFav1").style.display = "none";
+            document.getElementById("fav").style.display = "block";
+            if(document.getElementById("resultFav2") != null)
+            document.getElementById("resultFav2").style.display = "block";
+            if(document.getElementById("pagein") != null)
+            document.getElementById("pagein").style.display = "none";
+        }
+        
+        function detailbutton(name){
+            globalvar = name;
+            if(name == "result")
+                {
+            document.getElementById("results").style.display = "none";
+            document.getElementById("completedetails").style.display = "block";
+                }
+            else
+                {
+                    document.getElementById("fav").style.display = "none";
+                    document.getElementById("completedetails").style.display = "block";
+                }
+        }
+        function listbutton(){
+            console.log(globalvar);
+            if(globalvar == "result")
+                {
+                    console.log("inside list result");
+            document.getElementById("completedetails").style.display = "none";
+                    document.getElementById("results").style.display = "block";
+                    $("#resultFav1").css("display","block");
+                }
+            else
+            {
+                document.getElementById("completedetails").style.display = "none";
+                document.getElementById("fav").style.display = "block";
+                $("#resultFav2").css("display","block");
+            }
+        }
+        
+        function togglebutton(i,datafile)
+        {
+            var value = document.getElementById("button"+i).value;
+            if(value == "fav")
+                {
+                    document.getElementById("button"+i).innerHTML = "<i class='far fa-star'></i>";
+                    document.getElementById("button"+i).value = "not fav";
+                    myStorage.removeItem(datafile["place_id"]);
+                }
+            else
+                {
+                    document.getElementById("button"+i).innerHTML = "<i class='fas fa-star' style='color:orange;'></i>";
+                    document.getElementById("button"+i).value = "fav";
+                    myStorage.setItem(datafile["place_id"],JSON.stringify(datafile));
+                }
+            
+        }
+        function pagination_fav(it){
+                        console.log("inside pagination");
+                        var js,k;
+                        var txt = "<div style='float:right;padding-bottom:10px;'><button class='btn btn-default' id='favdetails' onclick='detailbutton(\"fav\");' disabled><strong>Details <i class='fas fa-chevron-right'></strong></i></button></div><table class='table table-hover container'><thead><tr><th>#</th><th>Category</th><th>Name</th><th>Address</th><th>Favorite</th><th>Details</th></tr></thead><tbody>";
+                        for(i=0,j=it;j<=myStorage.length;i++,j++)
+                            {
+                                if(i == 20 && it == 0)
+                                    {
+                                        txt = txt + "</table><div id='favpagin'><center><button class='btn btn-default' id='nextfav' onclick='pagination_fav(20+"+it+");'>Next <i class='fas fa-chevron-right'></i></button></center></div>";
+                                        document.getElementById("resultFav2").innerHTML = txt;
+                                        /*$("#nextfav").click(pagination_fav(20+it));
+                                        $("#prevfav").click(pagination_fav(it-20));*/
+                                        break;
+                                    }
+                                
+                                if(i == 20)
+                                    {
+                                        txt = txt + "</table><div id='favpagin'><center><button class='btn btn-default' id='prevfav' onclick='pagination_fav("+it+"-20);'><i class='fas fa-chevron-left'></i> Previous</button><button class='btn btn-default' id='nextfav' onclick='pagination_fav(20+"+it+");'>Next <i class='fas fa-chevron-right'></i></button></center></div>";
+                                        document.getElementById("resultFav2").innerHTML = txt;
+                                        /*$("#nextfav").click(pagination_fav(20+it));
+                                        $("#prevfav").click(pagination_fav(it-20));*/
+                                        break;
+                                    }
+                                if(j == myStorage.length)
+                                    {
+                                        console.log("inside final");
+                                        txt = txt + "</table><div id='favpagin'><center><button class='btn btn-default' id='prevfav' onclick='pagination_fav("+it+"-20);'><i class='fas fa-chevron-left'></i> Previous</button></center></div>";
+                                        document.getElementById("resultFav2").innerHTML = txt;
+                                        /*$("#nextfav").click(pagination_fav(20+it));
+                                        $("#prevfav").click(pagination_fav(it-20));*/
+                                        break;
+
+                                    }
+                               js = myStorage.getItem(myStorage.key(i+it));
+                                js = JSON.parse(js);
+                                console.log(js);
+                            txt = txt + "<tr id='fav"+js["place_id"]+"'><td>" + (i+1) + "</td><td><img src='" + js["image"] + "'></td><td>" + js["name"] + "</td><td>" + js["address"] + "</td><td><button class='btn btn-default' id='favbutton"+i+"' value='fav' onclick='favdelete(\""+ js["place_id"] +"\");'><i class='fas fa-trash-alt'></i></button></td><td><button class='btn btn-default' onclick='onDetails(\""+ js["place_id"] +"\","+js["lat"]+","+js["lon"]+",2,"+JSON.stringify(js)+");'><i class='fas fa-chevron-right'></i></button></td></tr>"; 
+                            }
+            document.getElementById("resultFav2").innerHTML = txt;
+            infavhighlight();
+        }
+        function detailfavtoggle(placeid,datafile){
+            var value = document.getElementById("favtwitter").value;
+            console.log("inside toggle");
+            if(value == "fav")
+                {
+                    console.log("inside fav");
+                    document.getElementById("favtwitter").innerHTML = "<i class='far fa-star'></i>";
+                    document.getElementById("favtwitter").value = "not fav";
+                    if(document.getElementById("button"+placeid) != null)
+                        {
+                    document.getElementById("button"+placeid).innerHTML = "<i class='far fa-star'></i>";
+                    document.getElementById("button"+placeid).value = "not fav";
+                        }
+                    myStorage.removeItem(datafile["place_id"]);
+                    if(myStorage.length == 0)
+                {
+                    console.log("Inside here");
+                    document.getElementById("fav").innerHTML = "<div class='alert alert-warning'>No records</div>";
+                }
+                else
+                    {
+                        var js,k;
+                        var txt = "<div style='float:right;padding-bottom:10px;'><button class='btn btn-default' id='favdetails' onclick='detailbutton(\"fav\");' disabled><strong>Details <i class='fas fa-chevron-right'></strong></i></button></div><table class='table table-hover container'><thead><tr><th>#</th><th>Category</th><th>Name</th><th>Address</th><th>Favorite</th><th>Details</th></tr></thead><tbody>";
+                        for(i=0;i<myStorage.length;i++)
+                            {
+                                if(i == 20)
+                                    {
+                                        txt = txt + "</table><div id='favpagin'><center><button class='btn btn-default' id='nextfav' onclick='pagination_fav(20);'>Next <i class='fas fa-chevron-right'></i></button></center></div>";
+                                        document.getElementById("resultFav2").innerHTML = txt;
+                                        /*$("#nextfav").click(pagination_fav(20));*/
+                                        break;
+                                    }
+                               js = myStorage.getItem(myStorage.key(i));
+                                js = JSON.parse(js);
+                                console.log(js);
+                            txt = txt + "<tr id='fav"+js["place_id"]+"'><td>" + (i+1) + "</td><td><img src='" + js["image"] + "'></td><td>" + js["name"] + "</td><td>" + js["address"] + "</td><td><button class='btn btn-default' id='favbutton"+i+"' value='fav' onclick='favdelete(\""+ js["place_id"] +"\");'><i class='fas fa-trash-alt'></i></button></td><td><button class='btn btn-default' onclick='onDetails(\""+ js["place_id"] +"\","+js["lat"]+","+js["lon"]+",2,"+JSON.stringify(js)+");'><i class='fas fa-chevron-right'></i></button></td></tr>"; 
+                            }
+                        document.getElementById("resultFav2").innerHTML = txt;
+                        infavhighlight();
+                    }
+                }
+            else
+                {
+                    console.log("inside not");
+                    document.getElementById("favtwitter").innerHTML = "<i class='fas fa-star' style='color:orange;'></i>";
+                    document.getElementById("favtwitter").value = "fav";
+                    if(document.getElementById("button"+i) != null)
+                        {
+                    document.getElementById("button"+i).innerHTML = "<i class='fas fa-star' style='color:orange;'></i>";
+                    document.getElementById("button"+i).value = "fav";
+                        }
+                    myStorage.setItem(datafile["place_id"],JSON.stringify(datafile));
+                    if(myStorage.length == 0)
+                {
+                    console.log("Inside here");
+                    document.getElementById("fav").innerHTML = "<div class='alert alert-warning'>No records</div>";
+                }
+                else
+                    {
+                        var js,k;
+                        var txt = "<div style='float:right;padding-bottom:10px;'><button class='btn btn-default' id='favdetails' onclick='detailbutton(\"fav\");' disabled><strong>Details <i class='fas fa-chevron-right'></strong></i></button></div><table class='table table-hover container'><thead><tr><th>#</th><th>Category</th><th>Name</th><th>Address</th><th>Favorite</th><th>Details</th></tr></thead><tbody>";
+                        for(i=0;i<myStorage.length;i++)
+                            {
+                                if(i == 20)
+                                    {
+                                        txt = txt + "</table><div id='favpagin'><center><button class='btn btn-default' id='nextfav' onclick='pagination_fav(20);'>Next <i class='fas fa-chevron-right'></i></button></center></div>";
+                                        document.getElementById("resultFav2").innerHTML = txt;
+                                        /*$("#nextfav").click(pagination_fav(20));*/
+                                        break;
+                                    }
+
+                               js = myStorage.getItem(myStorage.key(i));
+                                js = JSON.parse(js);
+                                console.log(js);
+                            txt = txt + "<tr id='fav"+js["place_id"]+"'><td>" + (i+1) + "</td><td><img src='" + js["image"] + "'></td><td>" + js["name"] + "</td><td>" + js["address"] + "</td><td><button class='btn btn-default' id='favbutton"+i+"' value='fav' onclick='favdelete(\""+ js["place_id"] +"\");'><i class='fas fa-trash-alt'></i></button></td><td><button class='btn btn-default' onclick='onDetails(\""+ js["place_id"] +"\","+js["lat"]+","+js["lon"]+",2,"+JSON.stringify(js)+");'><i class='fas fa-chevron-right'></i></button></td></tr>"; 
+                            }
+                        document.getElementById("resultFav2").innerHTML = txt;
+                        infavhighlight();
+                    }
+                }
+            
+        }
+        function favdelete(placeid)
+        {
+            myStorage.removeItem(placeid);
+            /*togglebutton(placeid,{});*/
+            if(myStorage.length == 0)
+                {
+                    console.log("Inside here");
+                    document.getElementById("fav").innerHTML = "<div class='alert alert-warning' style='padding-top:20px;'>No records</div>";
+                }
+                else
+                    {
+                        var js,k;
+                        var txt = "<div style='float:right;padding-bottom:10px;'><button class='btn btn-default' id='favdetails' onclick='detailbutton(\"fav\");' disabled><strong>Details <i class='fas fa-chevron-right'></strong></i></button></div><table class='table table-hover container'><thead><tr><th>#</th><th>Category</th><th>Name</th><th>Address</th><th>Favorite</th><th>Details</th></tr></thead><tbody>";
+                        for(i=0;i<myStorage.length;i++)
+                            {
+                                if(i == 20)
+                                    {
+                                        txt = txt + "</table><div  id='favpagin'><center><button class='btn btn-default' id='nextfav' onclick='pagination_fav(20);'>Next <i class='fas fa-chevron-right'></i></button></center></div>";
+                                        document.getElementById("resultFav2").innerHTML = txt;
+                                        /*$("#nextfav").click(pagination_fav(20));*/
+                                        break;
+                                    }
+
+                               js = myStorage.getItem(myStorage.key(i));
+                                js = JSON.parse(js);
+                                console.log(js);
+                            txt = txt + "<tr id='fav"+js["place_id"]+"'><td>" + (i+1) + "</td><td><img src='" + js["image"] + "'></td><td>" + js["name"] + "</td><td>" + js["address"] + "</td><td><button class='btn btn-default' id='favbutton"+i+"' value='fav' onclick='favdelete(\""+ js["place_id"] +"\");'><i class='fas fa-trash-alt'></i></button></td><td><button class='btn btn-default' onclick='onDetails(\""+ js["place_id"] +"\","+js["lat"]+","+js["lon"]+",2,"+JSON.stringify(js)+");'><i class='fas fa-chevron-right'></i></button></td></tr>"; 
+                            }
+                        document.getElementById("resultFav2").innerHTML = txt;
+                        infavhighlight();
+                    }
+            
+        }
+      function getLocation()
+        {
+        var xhttp = new XMLHttpRequest();
+        xhttp.open("GET","http://ip-api.com/json",false);
+        xhttp.send();
+        var doc = JSON.parse(xhttp.responseText);
+        lat = doc.lat;
+        long = doc.lon;
+        /*document.getElementById("search_btn").disabled = false;*/
+        document.getElementById("here_radio").value = lat + "," + long;
+            var input = document.getElementById('loc_txt');
+        autocomplete = new google.maps.places.Autocomplete(input);
+            $("#favpill").click(function(){
+            console.log("first");
+            if(myStorage.length == 0)
+                {
+                    console.log("Inside here");
+                    document.getElementById("fav").innerHTML = "<div class='alert alert-warning' style='padding-top:20px'>No records</div>";
+                }
+                else
+                    {
+                        var js,k;
+                        var txt = "<div style='float:right;padding-bottom:10px;'><button class='btn btn-default' id='favdetails' onclick='detailbutton(\"fav\");' disabled><strong>Details <i class='fas fa-chevron-right'></strong></i></button></div><table class='table table-hover container'><thead><tr><th>#</th><th>Category</th><th>Name</th><th>Address</th><th>Favorite</th><th>Details</th></tr></thead><tbody>";
+                        for(i=0;i<myStorage.length;i++)
+                            {
+                                if(i == 20)
+                                    {
+                                        txt = txt + "</table><div id='favpagin'><center><button class='btn btn-default' id='nextfav' onclick='pagination_fav(20);'>Next <i class='fas fa-chevron-right'></i></button></center></div>";
+                                        document.getElementById("resultFav2").innerHTML = txt;
+                                        /*$("#nextfav").click(pagination_fav(20));*/
+                                        break;
+                                    }
+
+                               js = myStorage.getItem(myStorage.key(i));
+                                js = JSON.parse(js);
+                                console.log(js);
+                            txt = txt + "<tr id='fav"+js["place_id"]+"'><td>" + (i+1) + "</td><td><img src='" + js["image"] + "'></td><td>" + js["name"] + "</td><td>" + js["address"] + "</td><td><button class='btn btn-default' id='favbutton"+i+"' value='fav' onclick='favdelete(\""+ js["place_id"] +"\");'><i class='fas fa-trash-alt'></i></button></td><td><button class='btn btn-default' onclick='onDetails(\""+ js["place_id"] +"\","+js["lat"]+","+js["lon"]+",2,"+JSON.stringify(js)+");'><i class='fas fa-chevron-right'></i></button></td></tr>"; 
+                            }
+                        document.getElementById("resultFav2").innerHTML = txt;
+                        infavhighlight();
+                    }
+        });
+        }
+        function locationerror()
+        {
+            console.log("inside changer");
+            document.getElementById("loc_txt").required = true;
+            console.log(document.getElementById("loc_txt").required);
+        }
+        function loc_change()
+            {
+                var c = document.getElementById("loc_txt");
+                if(c.disabled)
+                    {
+                    c.disabled = false;
+                    c.required = true;
+                    }
+                else
+                    {
+                    c.disabled = true;
+                        c.required = false;
+                        c.style.border = "1px solid #ced4da";
+                    }
+            }
+        function nextbtnfunc(){
+            var data = globalarr[globali];
+            console.log(data);
+            globali++;
+            build_table(data);
+        }
+        function prevbtnfunc()
+        {
+            console.log("Inside prev");
+            globali--;
+            var data = globalarr[globali];
+            build_table(data);
+        }
+        function build_table(data)
+        {
+            if(data == "error")
+                {
+                    var html = `<div style="margin-top:4%" class="alert alert-danger">
+                                    Failed to get search results.
+                                    </div>`;
+                }
+            else
+                {
+            var pgtxt = "";
+            var json = JSON.parse(data);
+            console.log(data);
+            console.log(json.results.length);
+                if(typeof json.results == "undefined" || json.results.length == 0)
+                    {
+                        console.log("Inside error");
+                        var html = `<div class="alert alert-warning">
+                                    No records.
+                                    </div>`;
+                    }
+                    else
+                    {
+                        if(typeof json.next_page_token == "undefined"){
+                            if(globali !=1)
+                                {
+                                    
+                                 pgtxt = "<div><center><button class='btn btn-default' id='prev_btn' onclick='prevbtnfunc();prevbtnfunc();'><i class='fas fa-chevron-left'></i> Previous</button></center></div>";
+                                    console.log(pgtxt);
+                                    /*document.getElementById("pagein").innerHTML = pgtxt;*/
+                                }
+                        }
+                        else{
+                            console.log("next token available");
+                                if(globali !=1)
+                                {
+                                 pgtxt = "<div><center><button class='btn btn-default' id='prev_btn' onclick='prevbtnfunc();prevbtnfunc();'><i class='fas fa-chevron-left'></i> Previous</button><button class='btn btn-default' id='next_btn' onclick='nextbtnfunc();'>Next <i class='fas fa-chevron-right'></i></button></center></div>";
+                                    /*document.getElementById("pagein").innerHTML = pgtxt;*/
+                                }
+                            else
+                                {
+                                   pgtxt = "<div><center><button class='btn btn-default' id='next_btn' onclick='nextbtnfunc();'>Next <i class='fas fa-chevron-right'></i></button></center></div>";
+                                   /* document.getElementById("pagein").innerHTML = pgtxt;*/
+                                }
+                                
+                                console.log(pgtxt);
+                                
+                                var next = json["next_page_token"];
+                            setTimeout(function(){ $.get("pagination?page_token="+next,function(data,status){
+                                    
+                                        globali++;
+                                    globalarr[globali] = data;
+                                        console.log(data);
+                                    /*build_table(data);*/
+                                    
+                            }); }, 2000);
+                                    
+                                }
+                        
+        var datafile = {};
+        var html = "<div class='justify-content-end' style='float:right;padding-bottom:10px;'><button class='btn btn-default' id='resultdetails' onclick='detailbutton(\"result\");' disabled><strong>Details <i class='fas fa-chevron-right'></strong></i></button></div><table class='table table-hover container'><thead><tr><th>#</th><th>Category</th><th>Name</th><th>Address</th><th>Favorite</th><th>Details</th></tr></thead><tbody>";
+        for(i=0;i<json["results"].length;i++)
+        {
+            if(myStorage.getItem(json["results"][i]["place_id"]) == null)
+                {
+            datafile = {
+                "name":json["results"][i]["name"],
+                "place_id":json["results"][i]["place_id"],
+                "address":json["results"][i]["vicinity"],
+                "image":json["results"][i]["icon"],
+                "lat":json["results"][i]["geometry"]["location"]["lat"],
+                "lon":json["results"][i]["geometry"]["location"]["lng"]
+            };
+            u = json["results"][i]["geometry"]["location"]["lat"];
+            v = json["results"][i]["geometry"]["location"]["lng"];
+            place_id = json["results"][i]["place_id"];
+            html = html + "<tr id='row"+json["results"][i]["place_id"]+"'><td>"+(i+1)+"</td><td><img src=\"" + json["results"][i]["icon"] + "\"/></td><td onclick=\"display_info(place_id);\">" +    
+ json["results"][i]["name"] + "</td><td>" + json["results"][i]["vicinity"] + "</td><td><button class='btn btn-default' id='button"+json["results"][i]["place_id"]+"' onclick='togglebutton(\""+json["results"][i]["place_id"]+"\","+JSON.stringify(datafile)+");' value='not fav'><i class='far fa-star'></i></button></td><td><button class='btn btn-default' onclick='onDetails(\""+json["results"][i]["place_id"]+"\","+json["results"][i]["geometry"]["location"]["lat"]+","+json["results"][i]["geometry"]["location"]["lng"]+",1,"+JSON.stringify(datafile)+");'><i class='fas fa-chevron-right'></i></button></td></tr>";
+                }
+            else
+                {
+                   datafile = {
+                "name":json["results"][i]["name"],
+                "place_id":json["results"][i]["place_id"],
+                "address":json["results"][i]["vicinity"],
+                "image":json["results"][i]["icon"],
+                "lat":json["results"][i]["geometry"]["location"]["lat"],
+                "lon":json["results"][i]["geometry"]["location"]["lng"]
+            };
+            u = json["results"][i]["geometry"]["location"]["lat"];
+            v = json["results"][i]["geometry"]["location"]["lng"];
+            place_id = json["results"][i]["place_id"];
+            html = html + "<tr id='row"+json["results"][i]["place_id"]+"'><td>"+(i+1)+"</td><td><img src=\"" + json["results"][i]["icon"] + "\"/></td><td onclick=\"display_info(place_id);\">" +    
+ json["results"][i]["name"] + "</td><td>" + json["results"][i]["vicinity"] + "</td><td><button class='btn btn-default' id='button"+json["results"][i]["place_id"]+"' onclick='togglebutton(\""+json["results"][i]["place_id"]+"\","+JSON.stringify(datafile)+");' value='not fav'><i class='fas fa-star' style='color:orange;'></i></button></td><td><button class='btn btn-default' onclick='onDetails(\""+json["results"][i]["place_id"]+"\","+json["results"][i]["geometry"]["location"]["lat"]+","+json["results"][i]["geometry"]["location"]["lng"]+",1,"+JSON.stringify(datafile)+");'><i class='fas fa-chevron-right'></i></button></td></tr>"; 
+                }
+        }
+    }
+                }
+        $(".progress-bar.progress-bar-striped.active").css("width","50%");
+        setTimeout(function(){
+        document.getElementById("resultFav1").innerHTML = "</tbody></table>"+html;
+
+            $("#pagin").css("visibility","visible");
+            $("#pagin").html(pgtxt);
+            /*document.getElementById("pagein").innerHTML = pgtxt;*/
+            
+        },500);
+        }
+        function onSearch()
+        {   
+           clearfunc();
+            var bar = document.getElementById("resultFav1");
+            bar.innerHTML = '<div class="progress" style="margin:15px;"><div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100" style="width: 50%;"></div></div>';
+            
+            console.log('Inside search func');
+            var kw = document.getElementById("kw").value;
+            var query = "keyword="+kw;
+            var cat = document.getElementById("cat").value;
+            query = query + "&category=" +cat;
+            var dist = document.getElementById("dist").value;
+            if(dist == "")
+                dist = 10;
+            query = query + "&distance=" +dist;
+            if(document.getElementById("here_radio").checked)
+             {   
+                fromtext = "Your Location";
+                 var here_location = document.getElementById("here_radio").value;
+                 fromvalue = here_location;
+                query = query + "&location=" + here_location;
+                 $.get("nearby?"+query,function(data,status)
+                  {
+                     if(status != "success")
+                         {
+                             data = "error";
+                             build_table(data);
+                         }
+                     else{
+                            globalarr[globali] = data;
+                            build_table(data);
+                     }
+                    
+        
+            });
+            }
+            else
+            {
+                var location_text = document.getElementById("loc_txt").value;
+                fromtext = location_text;
+                $.get("geocode?location_text="+location_text,function(data,status){
+                    console.log("inside get");
+                    var json = JSON.parse(data);
+                    var lon = json["results"][0]["geometry"]["location"]["lng"];
+                    var lat = json["results"][0]["geometry"]["location"]["lat"];
+                    location_text = lat + "," + lon;
+                    query = query + "&location=" + location_text;
+                    fromvalue = location_text;
+                    $.get("nearby?"+query,function(data,status)
+                  {
+                        globalarr[globali] = data;
+                        build_table(data);                
+        
+            });
+                });
+                
+                
+            } 
+
+            
+        }
+        function buildreview(reviews)
+        {
+            console.log(reviews);
+            var c = "";
+            if(typeof reviews == "undefined" || reviews.length == 0)
+            {
+                c = `<br><br><br><div class="alert alert-warning">
+                                    No records.
+                                    </div>`;
+            document.getElementById("google_review_content").innerHTML = c;
+            }
+            else
+                {
+                for(i=0;i<reviews.length;i++){
+                    c = c + "<div class='card'><div style='padding:1%;' class='media'><a class='nolink' target='_blank' href='"+ reviews[i]["author_url"] +"'><img class='mr-3' style='width:40px;height:40px' src='"+ reviews[i]["profile_photo_url"] +"'></a><div class='media-body'><div id='username'><a class='nolink' target='_blank' href='"+ reviews[i]["author_url"] +"'>" + reviews[i]["author_name"] + "</a></div><div><span style='position:relative;display:inline-block;' id='userratinggoogle"+i+"'></span><span>"+ moment.unix(reviews[i]["time"]).format("Y-M-D H:m:s")+"</span></div>" + reviews[i]["text"] +"</div></div></div>";
+                }
+                c = c + "";     
+            document.getElementById("google_review_content").innerHTML = c;
+            for(i=0;i<reviews.length;i++){
+                console.log(reviews[i]["rating"]);
+            $("#userratinggoogle"+i).rateYo({
+                                    numStars:Math.ceil(reviews[i]["rating"]),
+                                    starWidth: "16px",
+                                    rating: (reviews[i]["rating"]/Math.ceil(reviews[i]["rating"]))*100+"%",
+                                    readOnly: true
+                                    });
+            }
+                }
+            
+            
+        }
+        function build_yelptable(reviews)
+        { 
+            console.log("yelp");
+            console.log(reviews);
+            var c = "";
+            if(typeof reviews == "undefined" || reviews == null || reviews.length == 0)
+                {
+                c = `<br><br><br><div class="alert alert-warning">
+                                    No records.
+                                    </div>`;
+                document.getElementById("yelp_review_content").innerHTML = c;
+                }
+            else
+                {
+                for(i=0;i<reviews.length;i++){
+                    c = c + "<div class='card'><div style='padding:1%;' class='media'><a class='nolink' target='_blank' href='"+ reviews[i]["url"] +"'><img class='mr-3' style='width:40px;height:40px;border-radius:50%;' src='"+ reviews[i]["user"]["image_url"] +"'></a><div class='media-body'><div id='username'><a class='nolink' target='_blank' href='"+ reviews[i]["url"] +"'>" + reviews[i]["user"]["name"] + "</a></div><div><span style='position:relative;display:inline-block;' id='userratingyelp"+i+"'></span><span>" + reviews[i]["time_created"]+"</span><br> " + reviews[i]["text"] +"</div></div></div></div>";
+                }
+                c = c + "";
+            document.getElementById("yelp_review_content").innerHTML = c;
+            for(i=0;i<reviews.length;i++)
+            {
+                console.log(reviews[i]["rating"]);
+            $("#userratingyelp"+i).rateYo({
+                                    numStars:Math.ceil(reviews[i]["rating"]),
+                                    starWidth: "16px",
+                                    rating: (reviews[i]["rating"]/Math.ceil(reviews[i]["rating"]))*100+"%",
+                                    readOnly: true
+                                    });    
+            }
+                }
+            
+        }
+        function basetablebuild(data)
+                {
+                var json = JSON.parse(data);
+                reviews = json.result.reviews;
+                buildreview(reviews);
+                
+                }
+        var panorama;
+        function onDetails(placeid,lati,lon,xi,datafile)
+        {
+            
+            if(xi == 1)
+                {
+                    highlighterresults(placeid);
+                    globalvar = "result";
+                    document.getElementById("resultdetails").disabled =  false;
+                }
+            else
+            {
+                highlighterfav(placeid);
+                globalvar = "fav";
+                document.getElementById("favdetails").disabled =  false;
+            }
+            
+            document.getElementById("google_review_content").style.display = "block";
+            document.getElementById("yelp_review_content").style.display = "none";
+            $("#resultFav"+xi).css("display","none");
+            $("#pagin").css("display","none");
+            $("#completedetails").css("display","block");
+            if(myStorage.getItem(placeid) == null)
+                {
+            var html = "<div class='container' id='placename'></div><div id='twitter'><button class='btn btn-default' id='list' onclick='listbutton();'><strong><i class='fas fa-chevron-left'></i> List</strong></button><button class='btn btn-default' style='float:right;' id='tweetbutton' disabled><a id='tweet'><img class='twtimg' src='http://cs-server.usc.edu:45678/hw/hw8/images/Twitter.png'></a></button><button class='btn btn-default' id='favtwitter' style='float:right;' onclick='detailfavtoggle(\""+placeid+"\","+JSON.stringify(datafile)+");' value='not fav' disabled><i class='far fa-star'></i></button></div>";
+                }
+            else{
+                var html = "<div class='container' id='placename'></div><div id='twitter'><button class='btn btn-default' id='list' onclick='listbutton();'><strong><i class='fas fa-chevron-left'></i> List</strong></button><button class='btn btn-default' style='float:right;' id='tweetbutton' disabled><a id='tweet'><img class='twtimg' src='http://cs-server.usc.edu:45678/hw/hw8/images/Twitter.png'></a></button><button class='btn btn-default' id='favtwitter' style='float:right'  onclick='detailfavtoggle(\""+placeid+"\","+JSON.stringify(datafile)+");' value='fav' disabled><i class='fas fa-star' style='color:orange;'></i></button></div>";
+            }
+            
+            html = html + "<ul class='nav nav-tabs justify-content-end container-fluid' style='padding:0px;' role='tablist'><li class='nav-item'><a  class='nav-link active' data-toggle='tab' href='#Info'>Info</a></li><li class='nav-item'><a class='nav-link' data-toggle='tab' href='#Photos'>Photos</a></li><li class='nav-item'><a class='nav-link' data-toggle='tab' href='#Map'>Map</a></li><li class='nav-item'><a class='nav-link' data-toggle='tab' href='#Reviews'>Reviews</a></li></ul>";
+            document.getElementById("details_nav").innerHTML = html;
+            var request = {
+                            placeId: placeid
+                            };
+            var myplace = new google.maps.LatLng(lati, lon);
+            map = new google.maps.Map(document.getElementById('new'), {
+                                                                            center: myplace,
+                                                                            zoom: 17,
+                                                                            streetViewControl: false
+                                                                        });
+
+            var input = document.getElementById('from');
+            var autocomplete = new google.maps.places.Autocomplete(input);
+            autocomplete.bindTo('bounds', map);
+            service = new google.maps.places.PlacesService(map);
+            service.getDetails(request, function (place, status) {
+              if (status == google.maps.places.PlacesServiceStatus.OK) {
+                  var marker = new google.maps.Marker({
+                                                        map: map,
+                                                        place: {
+                                                            placeId: placeid,
+                                                            location: myplace
+                                                          }
+                                                        });
+                  panorama = map.getStreetView();
+        panorama.setPosition(myplace);
+        panorama.setPov(/** @type {google.maps.StreetViewPov} */({
+          heading: 265,
+          pitch: 0
+        }));
+                  
+                  /*Info*/
+                  var days = {
+                      "Monday":0,
+                      "Tuesday":1,
+                      "Wednesday":2,
+                      "Thursday":3,
+                      "Friday":4,
+                      "Saturday":5,
+                      "Sunday":6,
+                  }
+                  var intdays =["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+                      
+                  console.log("Places");
+                  var m = moment().utcOffset(place.utc_offset).format("dddd");
+                  console.log(m);
+                  console.log(place);
+                  
+                  var html = "";
+                  document.getElementById("placename").innerHTML = place.name;
+                  
+                  if(!(typeof place.formatted_address == "undefined"))
+                  html = "<table class='table table-striped'><tbody><tr><th>Address</th><td>"+place.formatted_address+"</td></tr>";
+                  
+                  if(!(typeof place.international_phone_number == "undefined"))
+                  html = html + "<tr><th>Phone Number</th><td>"+place.international_phone_number+"</td></tr>";
+                  
+                  if(!(typeof place.price_level == "undefined"))
+                    {
+                        var d = "";
+                  for(i=1;i<=place.price_level;i++)
+                      d = d + "$";
+                  html = html + "<tr><th>Price Level</th><td>"+d+"</td></tr>";
+                    }
+                  
+                  if(!(typeof place.rating == "undefined"))
+                      {
+                        html = html +"<tr><th>Rating</th><td>"+place.rating+"<span id='rateYo'></span></td></tr>";
+                        $("#rateYo").rateYo({
+                                    numStars:Math.ceil(place.rating),
+                                    starWidth: "20px",
+                                    rating: (place.rating/Math.ceil(place.rating))*100+"%",
+                                    readOnly: true
+                                    });
+                      }
+                  
+                  if(!(typeof place.url == "undefined"))
+                        html = html + "<tr><th>Google Page</th><td><a target='_blank' href='"+place.url+"'>"+place.url+"</a></td></tr>";
+                  
+                  if(!(typeof place.website == "undefined"))
+                  html = html + "<tr><th>Website</th><td><a target='_blank' href='"+place.website+"'>"+place.website+"</a></td></tr>";
+                  
+                  if(!(typeof place.opening_hours == "undefined"))
+                  {
+                      html = html + "<tr><th>Hours</th><td>";
+                      if(place.opening_hours.open_now == true)
+                        html = html +"Open now: "+place.opening_hours.weekday_text[days[m]].split("y:")[1]+" <a data-toggle='modal' href='#myModal'>Daily open hours</td></tr></tbody></table>";
+                      else
+                        html = html +"Closed  <a data-toggle='modal' href='#myModal'>Daily open hours</td></tr></tbody></table>";
+                  html = html + `<!-- The Modal -->
+  <div class="modal fade" id="myModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+      
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4 class="modal-title">Open hours</h4>
+          <button class="close" data-dismiss="modal">&times;</button>
+        </div>
+        
+        <!-- Modal body -->
+        <div class="modal-body">
+          <table class="table">
+            <tbody>
+                <tr><td><strong>`+m+`</strong></td><td><strong>`+place.opening_hours.weekday_text[days[m]].split("y:")[1]+`</strong></td></b></tr>`;
+                for(i=days[m]+1;;i++)
+                    {
+                        i = i % 7;
+                        if(i == days[m])
+                            break;
+                  html = html+ `<tr><td>`+intdays[i]+`</td><td>`+place.opening_hours.weekday_text[1].split("y:")[1]+`</td></tr>`;
+                    }
+         html = html + `  </tbody>
+        </table>
+        </div>
+        
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+        
+      </div>
+    </div>
+  </div>`;
+                  }
+                  
+                  document.getElementById("Info").innerHTML = html;
+                  
+                  if(!(typeof place.rating == "undefined"))
+                      {
+                        $("#rateYo").rateYo({
+                                    numStars:Math.ceil(place.rating),
+                                    starWidth: "20px",
+                                    rating: (place.rating/Math.ceil(place.rating))*100+"%",
+                                    readOnly: true
+                                    });
+                      }
+                  
+                  
+                  document.getElementById("favtwitter").disabled = false;
+                  document.getElementById("tweetbutton").disabled = false;
+                  
+                  if(!(typeof place.website == "undefined"))
+                        $("#tweet").attr('href','https://twitter.com/intent/tweet?text=Check out '+place.name+' located at '+place.formatted_address+'. Website:&url='+place.website+'&hashtags=TravelAndEntertainmentSearch');
+                  else
+                        $("#tweet").attr('href','https://twitter.com/intent/tweet?text=Check out '+place.name+' located at '+place.formatted_address+'. Website:&url='+place.url+'&hashtags=TravelAndEntertainmentSearch');
+                  
+                  document.getElementById("to").value = place.name+","+place.formatted_address;
+                  var values = fromvalue.split(',');
+                      console.log(values);
+                  document.getElementById("from").value = fromtext;
+                  
+                  /*Photos*/
+                  var txt = "";
+                  if(typeof place.photos == "undefined" || place.photos.length == 0)
+                      txt = `<br><br><br><div class="alert alert-warning">
+                                    No records.
+                                    </div>`;
+                  else
+                      {
+                  var photos = place.photos;
+                  var c1="",c2="",c3="",c4="";
+                  var t=0;
+                  for(i=0;i<photos.length;i++)
+                      {
+                          t = i % 4;
+                          if(t == 0)
+                              {
+                               c1 = c1 + "<a target='_blank' href='"+photos[i].getUrl({'maxWidth': photos[i].width, 'maxHeight': photos[i].height})+"'><img src='"+photos[i].getUrl({'maxWidth': 500, 'maxHeight': 500})+"' style='width:100%'></a>";    
+                              }
+                          else if(t == 1)
+                              {
+                               c2 = c2 + "<a target='_blank' href='"+photos[i].getUrl({'maxWidth': photos[i].width, 'maxHeight': photos[i].height})+"'><img src='"+photos[i].getUrl({'maxWidth': 500, 'maxHeight': 500})+"' style='width:100%'></a>";    
+                              }
+                          else if(t == 2)
+                              {
+                                c3 = c3 + "<a target='_blank' href='"+photos[i].getUrl({'maxWidth': photos[i].width, 'maxHeight': photos[i].height})+"'><img src='"+photos[i].getUrl({'maxWidth': 500, 'maxHeight': 500})+"' style='width:100%'></a>";
+                              }
+                          else{
+                              c4 = c4 + "<a target='_blank' href='"+photos[i].getUrl({'maxWidth': photos[i].width, 'maxHeight': photos[i].height})+"'><img src='"+photos[i].getUrl({'maxWidth': 500, 'maxHeight': 500})+"' style='width:100%'></a>";    
+                          }
+                      }
+                  txt = "<div class='row'><div class='column'>" + c1 + "</div><div class='column'>" + c2 + "</div><div class='column'>" + c3 + "</div><div class='column'>" + c4 + "</div>";
+                      }
+                  document.getElementById("Photos").innerHTML = txt;
+                  $("#from").keyup(function(){
+                      if(document.getElementById("from").value == null || (document.getElementById("from").value.length == 0) || !(document.getElementById("from").value.replace(/\s/g, '').length))
+                          {
+                              document.getElementById("getDirection").disabled = true;
+                          }
+                      else
+                          {
+                              document.getElementById("getDirection").disabled = false;
+                          }
+                  });
+                  $("#getDirection").click(function(){
+                      
+                      document.getElementById("details_routes").innerHTML = "";
+                      if(document.getElementById("from").value == "Your Location" || document.getElementById("from").value == fromtext)
+                          {
+                      calcRoute(map,document.getElementById("selectedMode").value,(new google.maps.LatLng(parseFloat(values[0]),parseFloat(values[1]))),myplace);
+                          }
+                      else
+                      {
+                        $.get("geocode?location_text="+document.getElementById("from").value,function(data,status)
+                              {
+                    var json = JSON.parse(data);
+                    var lon = json["results"][0]["geometry"]["location"]["lng"];
+                    var lat = json["results"][0]["geometry"]["location"]["lat"];
+                          calcRoute(map,document.getElementById("selectedMode").value,(new google.maps.LatLng(lat,lon)),myplace);  
+                              });
+                      
+                              
+                  }});
+                  
+                /*Yelp Reviews*/
+                  for(i=0;i<place["address_components"].length;i++)
+                      {
+
+                          if(place["address_components"][i]["types"][0] == "locality")
+                              var city = place["address_components"][i]["short_name"];
+                          if(place["address_components"][i]["types"][0] == "administrative_area_level_1")
+                              var state = place["address_components"][i]["short_name"];
+                          if(place["address_components"][i]["types"][0] == "country")
+                              var country = place["address_components"][i]["short_name"];
+                      }
+                    console.log(city);
+                  console.log(state);
+                  console.log(country);
+                  
+                  $.get("yelp?name=" + place["name"] + "&address1=" + place["formatted_address"] + "&city=" + city + "&state=" + state + "&country=" + country,function(data,status){
+                      tem = null;
+                      if(!(data == null) || !(typeof data == "undefined"))
+                    {      
+                  yelpdata = JSON.parse(data);
+                    
+                  if(yelpdata == null)
+                      {
+                          var  c = `<br><br><br><div class="alert alert-warning">
+                                    No records.
+                                    </div>`;
+                document.getElementById("yelp_review_content").innerHTML = c;
+                      }
+                        else
+                            {
+                  yelpdata = yelpdata.reviews;
+                  tem = JSON.parse(data).reviews;
+                  console.log(tem);
+                  build_yelptable(tem);
+                            }
+                    }
+                      else{
+                        var  c = `<br><br><br><div class="alert alert-warning">
+                                    No records.
+                                    </div>`;
+                document.getElementById("yelp_review_content").innerHTML = c;
+                          
+                      }
+                 
+                  $("#review_select").change(function(){
+                      var val = document.getElementById("review_select").value;
+                      var vis_yelp = document.getElementById("yelp_review_content").style.display;
+                      var vis_google = document.getElementById("google_review_content").style.display;
+                      if(val === "yelp")
+                          {
+                                          if(document.getElementById("yelp_review_content").style.display === "none")
+                                  {
+                                    
+                                  document.getElementById("yelp_review_content").style.display = "block";
+                                  document.getElementById("google_review_content").style.display = "none";
+                                  }
+                          }
+                      else
+                          {
+                              if(document.getElementById("google_review_content").style.display === "none")
+                                  {
+                                  document.getElementById("google_review_content").style.display = "block";
+                                  document.getElementById("yelp_review_content").style.display = "none";
+                                  }
+                          }
+                  });
+            });
+              }
+                else
+                    {
+                        var html = `<div style="margin-top:4%" class="alert alert-danger">
+                                    Failed to get details results.
+                                    </div>`;
+                        document.getElementById("resultFav"+xi) = html;
+                    }
+            }
+            );
+            $.get("review?place_id="+placeid,function(data,status){
+                googledata = JSON.parse(data);
+                googledata = googledata.result.reviews;
+                temp = googledata;
+                te = data;
+                basetablebuild(data);
+            });
+            $("#review_order,#review_select").change(function(){
+                console.log(document.getElementById("review_select").value);
+                    if(document.getElementById("review_select").value == "google")
+                 {       
+                    var x = document.getElementById("review_order").value;
+            switch(x){
+                case "defaultorder" : basetablebuild(te);
+                                 break;
+                case "max" : var maxrating = temp.sort(function(a,b){
+                             return (b.rating - a.rating);
+                    });
+                    buildreview(maxrating);
+                            break;
+                case "min" : var minrating = temp.sort(function(a,b){
+                             return (a.rating - b.rating);
+                    });
+                    buildreview(minrating);
+                            break;
+                case "recent" : var recent = temp.sort(function(a,b){
+                                return (b.rating - a.rating);
+                    });
+                    buildreview(recent);
+                            break;
+                case "old" : var old = temp.sort(function(a,b){
+                             return (a.rating - b.rating);
+                    
+                    });
+                    buildreview(old);
+                            break;
+            }
+                }
+                    else{
+                        var x = document.getElementById("review_order").value;
+                        console.log(x);
+                        switch(x){
+                                case "defaultorder" : if(typeof tem == undefined)
+                                    tem = null;
+                                build_yelptable(tem);
+                                console.log(tem);
+                                 break;
+                case "max" : var maxrating = yelpdata.sort(function(a,b){
+                             return (b.rating - a.rating);
+                    });
+                        console.log("Inside max of yelp");
+                    build_yelptable(maxrating);
+                            break;
+                case "min" : var minrating = yelpdata.sort(function(a,b){
+                             return (a.rating - b.rating);
+                    });
+                    build_yelptable(minrating);
+                            break;
+                case "recent" : var recent = yelpdata.sort(function(a,b){
+                                return (Date.parse(b.time_created) > Date.parse(a.time_created));
+                    });
+                    build_yelptable(recent);
+                            break;
+                case "old" : var old = yelpdata.sort(function(a,b){
+                             return (Date.parse(a.time_created) > Date.parse(b.time_created));
+                    
+                    });
+                    build_yelptable(old);
+                            break;
+                        }
+                    }
+                });
+            $("#Info").trigger("click");
+        }
+                
+        function calcRoute(map,selectedMode,source,dest)
+        {
+             var directionsService = new google.maps.DirectionsService();
+            var directionsDisplay = new google.maps.DirectionsRenderer();
+            var mapOptions2 = {
+                    zoom: 17,
+                    center: source
+                    }
+                    var m = document.getElementById('new');
+                    m.style.zIndex="1";
+            
+             var map1 = new google.maps.Map(m, mapOptions2);
+             directionsDisplay.setMap(map1);
+             directionsDisplay.setPanel(document.getElementById("details_routes"));
+             console.log("source: "+source);
+           console.log("Im inside");
+            var request = {
+                origin: source,
+                destination: dest,
+                provideRouteAlternatives: true,
+                travelMode: google.maps.TravelMode[selectedMode]
+                };
+            directionsService.route(request, function(response, status) {
+            if (status == 'OK') {
+            directionsDisplay.setDirections(response);
+                                }
+            });
+        }
+        function toggleStreetView() {
+        var toggle = panorama.getVisible();
+        if (toggle == false) {
+          panorama.setVisible(true);
+            document.getElementById("streetview").src = "http://cs-server.usc.edu:45678/hw/hw8/images/Map.png";
+        } else {
+          panorama.setVisible(false);
+            document.getElementById("streetview").src = "http://cs-server.usc.edu:45678/hw/hw8/images/Pegman.png";
+        }
+      }
+        
+      </script>
+    </head>
+
+    <body ng-app="" onload="getLocation();">
+        <fieldset class="container" id="main">
+            <h3 class="text-center">Travel and Entertainment Search</h3>
+        <form name="myForm" onsubmit="return false">
+            <div class="form-inline"><div class="col-md-4"><label class="control-label">Keyword<span style="color: red;">*</span></label></div><div class="col-md-6"><input class="form-control" type="text" id="kw" size=40 name="mykw" ng-model="mykw" required><span style="color:red" ng-show="myForm.mykw.$touched && myForm.mykw.$invalid"><br>
+Please enter a keyword</span></div></div><br>
+            <div class="form-inline">
+                <div class="col-md-4"><label class="control-label">Category</label>
+                </div>
+                <div class="col-md-4">
+                    <select class="form-control" id="cat" >
+                        <option selected>Default</option>
+                        <option>Airport</option>
+                        <option>Amusement Park</option>
+                        <option>Aquarium</option>
+                        <option>Art Gallery</option>
+                        <option>Bakery</option>
+                        <option>Bar</option>
+                        <option>Beauty Salon</option>
+                        <option>Bowling Alley</option>
+                        <option>Bus Station</option>
+                        <option>Cafe</option>
+                        <option>Campground</option>
+                        <option>Car Rental</option>
+                        <option>Casino</option>
+                        <option>Lodging</option>
+                        <option>Movie Theater</option>
+                        <option>Museum</option>
+                        <option>Night Club</option>
+                        <option>Park</option>
+                        <option>Parking</option>
+                        <option>Restaurant</option>
+                        <option>Shopping Mall</option>
+                        <option>Stadium</option>
+                        <option>Subway Station</option>
+                        <option>Taxi Stand</option>
+                        <option>Train Station</option>
+                        <option>Transit Station</option>
+                        <option>Travel Agency</option>
+                        <option>Zoo</option>
+                </select>
+                </div>
+            </div><br>
+            
+            <div class="form-inline">
+                <div class="col-md-4">
+                    <label class="control-label">Distance(miles)</label>
+                </div>
+                <div class="col-md-4">
+                    <input class="form-control" type="text" placeholder="10" id="dist">
+                </div>
+            </div><br>
+            
+            <div class="form-inline">
+                   
+                   <span class="col-sm-4"><label>From<span style="color: red;">*</span></label></span>
+                   <span class="col-sm-4"><input type="radio" id="here_radio" name="location" onchange="loc_change();" checked> Current location</span>
+                
+            </div>
+                <div class="form-inline">
+                   
+                    <label class="col-sm-4" ></label>
+                   <span class="col-sm-4"><input type="radio" name="location" onchange="locationerror();loc_change();">Other. Please specify:</span></div>
+                
+            
+            <div class="form-inline">
+                    <label class="col-sm-4"></label>
+                    <span class="col-sm-6"><input class="form-control" type="text" size=40  id="loc_txt" name="my_loc" ng-model="my_loc" required disabled><span style="color:red" ng-show="myForm.my_loc.$touched && myForm.my_loc.$invalid"><br>
+Please enter a location</span></span>
+            </div><br>
+            
+            <div class="form-row col-md-4">
+                <div style="margin-right: 1%;"><button ng-disabled="myForm.myloc.$invalid || myForm.mykw.$invalid" class="form-control btn btn-primary" style="margin:.2%;" name="search" id="search_btn" onclick="onSearch();" value="Search"><i class="fas fa-search"></i>Search</button></div>
+                <div><input style="margin:.2%;" class="form-control btn btn-default" type="reset" onclick="clearfunc();" name="clear" value="Clear">
+            </div></div><br>
+    </form>
+        </fieldset><br><div class="container-fluid">
+        <ul class="nav nav-pills justify-content-center container-fluid" role="tablist">
+            <li class="nav-item">
+            <a class="nav-link active" data-toggle="pill" href="#results" onclick="resetter1();">Results</a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link" data-toggle="pill" href="#fav" id="favpill" onclick="resetter2();">Favorites</a>
+            </li>
+            
+            </ul>
+        </div>
+        <div class="tab-content container-fluid">
+        <div class="tab-pane active" role="tabpanel" id="results">
+        <div id="resultFav1" class="container-fluid table-responsive">
+        
+        </div>
+           <!-- <div id="pagin"></div>-->
+            <div class="container-fluid" id="pagin" style="visibility: hidden"></div>
+               </div>
+         
+        <div class="container-fluid" id="completedetails">
+        <span  id="details_nav"></span>
+        <div class="tab-content">
+            <div id="Info" class="tab-pane active table-responsive" ></div>
+  <div id="Photos" class="tab-pane fade"></div>
+  <div id="Map" class="tab-pane fade">
+    <form onsubmit="return false">
+        <div class="form-row">
+        <div class="form-group col-md-4">
+            <label for="from">From</label>
+            <input type="text" class="form-control" id="from">
+        </div>
+        <div class="form-group col-md-4">
+            <label for="to">To</label>
+            <input type="text" class="form-control" id="to" readonly>
+        </div>
+        <div class="form-group col-md-2">
+            <label for="travelmode">Travel Mode</label>
+            <select id="selectedMode" class="form-control">
+                <option id="drive" value="DRIVING" selected>Driving</option>
+                <option id="bicycle" value="BICYCLING">Bicycling</option>
+                <option id="transit" value="TRANSIT">Transit</option>
+                <option id="walk" value="WALKING">Walking</option>
+            </select>
+        </div>
+        <div class="form-group col-md-2">
+            <label for="submitmap"></label>
+            <button id="getDirection" class=" btn btn-primary form-control">Get Direction</button>
+        </div>
+    </div>  
+    </form>
+      <div ><img onclick="toggleStreetView();" style="border:1px solid lightgrey;padding: 2px;" id="streetview" src="http://cs-server.usc.edu:45678/hw/hw8/images/Pegman.png"></div><br>
+      <div id="new" class="container-fluid"></div>
+      <div id="details_routes" class="container-fluid"></div>
+</div>
+  <div id="Reviews" class="container-fluid tab-pane fade" style="padding: 0px;">
+    <div class="form-row" style="padding: 0px;"><div><form id="reviewform"><select class="form-control" id="review_select" style="margin: .5%;background-color: gray;color: white;">
+        <option value="google" class="reviewclass" selected>Google Reviews</a></option>
+        <option value="yelp" class="reviewclass">Yelp Reviews</a></option>
+            </select></div>
+      <div><select id="review_order" class="form-control" style="margin: .5%;background-color: gray;color: white;">
+          <option value="defaultorder" class="reviewclass" selected>Default Order</option>
+          <option value="max" class="reviewclass">Highest Rating</option>
+          <option value="min" class="reviewclass">Lowest Rating</option>
+          <option value="recent" class="reviewclass">Most Recent</option>
+          <option value="old" class="reviewclass">Least Recent</option>
+          </select></form></div></div>
+      <div class="tab-content container-fluid" style="padding: 0px;">
+      <div id="google_review_content"></div>
+      <div id="yelp_review_content"></div>
+      </div>
+            </div>
+            </div></div>
+     
+<div class="tab-pane container-fluid" role="tabpanel" id="fav">
+<div id="resultFav2" class="container-fluid table-responsive">
+        
+        </div>
+</div></div>
+    </body>
+</html>
